@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Клиенты</title>
+
+    <!-- Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>#map { height: 400px; margin-top: 20px; } table { border-collapse: collapse; } th, td { padding: 5px; border: 1px solid black; }</style>
+</head>
+<body>
+<h1>Клиенты</h1>
+
+<div style="display: flex; align-items: flex-start; gap: 20px;">
+    <!-- Форма -->
+    <form id="clientForm" style="display: flex; flex-direction: column; gap:5px;">
+        <label>Квартира: <input type="text" name="apartment" required></label>
+        <label>Портрет клиента: <textarea name="profile"></textarea></label>
+        <label>Чем пользуется: <input type="text" name="services_used"></label>
+        <label>Оценка провайдера: <input type="text" name="provider_rating"></label>
+        <label>Интерес к услугам: <textarea name="provider_interest"></textarea></label>
+        <label>Удобное время: <input type="text" name="contact_time"></label>
+        <label>Телефон: <input type="text" name="phone"></label>
+        <label>Желаемая цена: <input type="text" name="fair_price"></label>
+        <label>Примечание: <textarea name="note"></textarea></label>
+        <button type="submit">Добавить клиента</button>
+    </form>
+
+    <!-- Кнопка экспорта -->
+    <button id="exportBtn" style="height:40px;padding:0 15px;">Экспорт в Excel</button>
+</div>
+
+<h2>Список клиентов</h2>
+<table id="clientsTable">
+    <thead>
+        <tr>
+            <th>ID</th><th>Квартира</th><th>Портрет</th><th>Услуги</th><th>Оценка провайдера</th>
+            <th>Интерес к услугам</th><th>Удобное время</th><th>Телефон</th><th>Желаемая цена</th><th>Примечание</th><th>Широта</th><th>Долгота</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<h2>Карта объектов</h2>
+<div id="map"></div>
+
+<script>
+const form = document.getElementById('clientForm');
+const tableBody = document.querySelector('#clientsTable tbody');
+const exportBtn = document.getElementById('exportBtn');
+
+// Загрузка клиентов в таблицу
+async function loadClients() {
+    const res = await fetch('/clients/');
+    const clients = await res.json();
+    tableBody.innerHTML = '';
+    clients.forEach(c => {
+        const row = `<tr>
+            <td>${c.id}</td><td>${c.apartment}</td><td>${c.profile}</td><td>${c.services_used}</td><td>${c.provider_rating}</td>
+            <td>${c.provider_interest}</td><td>${c.contact_time}</td><td>${c.phone}</td><td>${c.fair_price}</td><td>${c.note}</td>
+            <td>${c.latitude || ''}</td><td>${c.longitude || ''}</td>
+        </tr>`;
+        tableBody.innerHTML += row;
+    });
+}
+
+// Добавление клиента с GPS
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(form));
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((pos) => {
+            data.latitude = pos.coords.latitude;
+            data.longitude = pos.coords.longitude;
+            fetch('/clients/', {
+                method: 'POST',
+                headers:{'Content-Type':'application/json'},
+                body: JSON.stringify(data)
+            }).then(() => { form.reset(); loadClients(); addMarkers(); });
+        });
+    } else {
+        fetch('/clients/', {
+            method: 'POST',
+            headers:{'Content-Type':'application/json'},
+            body: JSON.stringify(data)
+        }).then(() => { form.reset(); loadClients(); addMarkers(); });
+    }
+});
+
+// Экспорт в Excel
+exportBtn.addEventListener('click', () => {
+    window.location.href = '/export/';
+});
+
+// Карта
+const map = L.map('map').setView([42.98, 47.5], 10);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution:'&copy; OpenStreetMap contributors'
+}).addTo(map);
+
+async function addMarkers() {
+    const res = await fetch('/clients/');
+    const clients = await res.json();
+    clients.forEach(c => {
+        if(c.latitude && c.longitude){
+            L.marker([c.latitude, c.longitude])
+             .addTo(map)
+             .bindPopup(`<b>${c.apartment}</b><br>${c.profile}<br>${c.services_used}`);
+        }
+    });
+}
+
+// Инициализация таблицы и карты
+loadClients();
+addMarkers();
+</script>
+</body>
+</html>
