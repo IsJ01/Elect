@@ -1,11 +1,16 @@
 import os
 
+import uvicorn
 from fastapi import FastAPI
 from dotenv import load_dotenv
+from fastapi.params import Depends
 
 from fastapi.security import OAuth2PasswordBearer
+from sqlalchemy.orm import Session
+from sqlalchemy.sql.annotation import Annotated
 
-from app.services import UserService
+from app.schemas import UserCreateDto
+from app.services import UserService, generate_token
 
 from app.database import get_db
 
@@ -31,5 +36,17 @@ def startup_event():
         print(f"❌ Error during startup: {e}")
     finally:
         db.close()
+
+
+@app.post("/api/v1/sign-up")
+async def sign_up(user: UserCreateDto,
+                  user_service: UserService = Depends(),
+                  db:Session = Depends(get_db)):
+    new_user = user_service.create_user(db, user)
+    return generate_token(new_user, SIGNING_KEY, ACCESS_TOKEN_EXPIRE_HOURS)
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="localhost", port=8081)
+
 
 
