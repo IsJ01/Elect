@@ -48,7 +48,7 @@ public class AuthConfiguration {
                 CorsConfiguration configuration = new CorsConfiguration();
                 configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE"));
                 configuration.setAllowedHeaders(List.of("*"));
-                configuration.setAllowedOrigins(List.of("*"));
+                configuration.setAllowedOrigins(List.of("http://localhost:3000"));
                 configuration.setAllowCredentials(true);
                 return configuration;
             }))

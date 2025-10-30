@@ -1,0 +1,27 @@
+package com.app.elect.auth.dto;
+
+import java.time.LocalTime;
+import java.util.List;
+
+import com.app.elect.auth.database.entity.Gender;
+import com.app.elect.auth.database.entity.Status;
+
+import lombok.Value;
+
+@Value
+public class ClientReadDto {
+    Long id;
+    UserReadDto userReadDto;
+    String address;
+    Gender gender;
+    Long age;
+    Status status;
+    String services;
+    Long providerScore;
+    String interest;
+    LocalTime comfTimeStart;
+    LocalTime comfTimeEnd;
+    String number;
+    String price;
+    List<CommentReadDto> comments;
+}

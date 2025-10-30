@@ -7,4 +7,8 @@ databaseChangeLog:
       id: 30-10-2025-add-clients
       file: v1/30-10-2025-add-clients.yaml
       relativeToChangelogFile: true
+  - include:
+      id: 30-10-2025-add-comments
+      file: v1/30-10-2025-add-comments.yaml
+      relativeToChangelogFile: true
         

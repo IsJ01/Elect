@@ -12,9 +12,11 @@ import com.app.elect.auth.dto.JwtResponse;
 import com.app.elect.auth.mapper.UserCreateMapper;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthenticationService {
 
     private final AuthenticationManager authenticationManager;
@@ -35,10 +37,10 @@ public class AuthenticationService {
         return Optional.of(authRequest)
             .map(req -> userDetailsServiceImpl.loadUserByUsername(req.getUsername()))
             .map(user -> {
-                authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                    user, 
-                    authRequest.getPassword()
-                ));
+                    authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                        user.getUsername(), 
+                        authRequest.getPassword()
+                    ));
                 return user;
             })
             .map(jwtService::generateToken)

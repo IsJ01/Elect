@@ -28,3 +28,6 @@ spring:
 token:
   signing:
     key: ${SIGNING_TOKEN}
+
+admin:
+  pass: ${ADMIN_PASS}
