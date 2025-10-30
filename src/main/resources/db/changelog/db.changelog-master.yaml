@@ -1,0 +1,6 @@
+databaseChangeLog:
+  - include:
+      id: 30-10-2025-inital-schema
+      file: v1/30-10-2025-inital.yaml
+      relativeToChangelogFile: true
+        
