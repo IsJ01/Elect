@@ -3,4 +3,8 @@ databaseChangeLog:
       id: 30-10-2025-inital-schema
       file: v1/30-10-2025-inital.yaml
       relativeToChangelogFile: true
+  - include:
+      id: 30-10-2025-add-clients
+      file: v1/30-10-2025-add-clients.yaml
+      relativeToChangelogFile: true
         

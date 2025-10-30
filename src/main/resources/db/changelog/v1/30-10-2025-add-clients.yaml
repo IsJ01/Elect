@@ -1,0 +1,67 @@
+databaseChangeLog:
+  - changeSet:
+      id: "1"
+      author: Is067
+      changes:
+        - createTable:
+            tableName: clients
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: address
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: gender
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: age
+                  type: INTERGER
+              - column:
+                  name: status
+                  type: varchar(255)
+              - column:
+                  name: services
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: interest
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: comf_time_start
+                  type: DATETIME
+                  constraints:
+                    nullable: false
+              - column:
+                  name: comf_time_end
+                  type: DATETIME
+                  constraints:
+                    nullable: false
+              - column:
+                  name: number
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: price
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: comment
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+        
