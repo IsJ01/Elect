@@ -7,6 +7,8 @@ import java.util.List;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -41,11 +43,14 @@ public class Client implements BaseEntity<Long> {
 
     @Builder.Default
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Gender gender = Gender.MALE;
 
     private Long age;
 
-    private Status status;
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    private Status status = Status.ACTIVE;
 
     @Column(nullable = false)
     private String services;

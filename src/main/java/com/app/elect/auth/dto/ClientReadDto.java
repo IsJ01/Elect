@@ -11,7 +11,7 @@ import lombok.Value;
 @Value
 public class ClientReadDto {
     Long id;
-    UserReadDto userReadDto;
+    UserReadDto user;
     String address;
     Gender gender;
     Long age;

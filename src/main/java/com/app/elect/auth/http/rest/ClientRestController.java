@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.app.elect.auth.dto.ClientCreateDto;
+import com.app.elect.auth.dto.ClientFilerDto;
 import com.app.elect.auth.dto.ClientReadDto;
 import com.app.elect.auth.service.ClientService;
 
@@ -29,20 +30,32 @@ public class ClientRestController {
 
     private final ClientService clientService;
 
-    @GetMapping
-    public ResponseEntity<?> findAll() {
+    @GetMapping("/score-statistic")
+    public ResponseEntity<?> scoreStatistic() {
         return ResponseEntity.ok()
-            .body(clientService.findAll());
+            .body(clientService.getScore());
+    }
+
+    @GetMapping("/filter")
+    public ResponseEntity<?> findAllByFilter(ClientFilerDto filerDto) {
+        return ResponseEntity.ok()
+            .body(clientService.findAllByFilter(filerDto));
+    }
+
+    @GetMapping
+    public ResponseEntity<?> findAll(@PageableDefault(size = 2, page = 0) Pageable pageable, ClientFilerDto filerDto) {
+        return ResponseEntity.ok()
+            .body(clientService.findAllByFilter(pageable, filerDto));
     }
 
     @GetMapping("/by-user/{id}")
     public PagedModel<ClientReadDto> findAllByUser(@PathVariable Long id, 
-        @PageableDefault(size = 10, page = 0) Pageable pageable) {
-        return clientService.findAllByUser(id, pageable);
+        @PageableDefault(size = 2, page = 0) Pageable pageable) {
+        return clientService.findAllByUser(pageable, id);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> findById(Long id) {
+    public ResponseEntity<?> findById(@PathVariable Long id) {
         return ResponseEntity.ok()
             .body(clientService.findById(id));
     }
@@ -56,11 +69,11 @@ public class ClientRestController {
 
     @Transactional
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(Long id) {
+    public ResponseEntity<?> delete(@PathVariable Long id) {
         return clientService.delete(id) ?
-            notFound().build()
+            ok().build()
             :
-            ok().build();
+            notFound().build();
     }
 
 }
